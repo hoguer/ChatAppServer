@@ -14,15 +14,15 @@ exports.createMessage = function(event, context, callback){
 	let user_email = payload["user_email"];
 	let message = payload["message"];
 	let createdTime = (new Date()).getTime();
-    // TBD: email address to lower case
-    // TBD: check if ChatUser already exists (user is in chat)
-    // TBD: validate email address
-    // Could use CreatedTime and UserEmail as a uniqe Id so Id is unecessary,
-    // but then ChatId would need a GSI for retrieving messages by ChatId 
-    // Check message length
+  // TBD: email address to lower case
+  // TBD: check if ChatUser already exists (user is in chat)
+  // TBD: validate email address
+  // Could use CreatedTime and UserEmail as a uniqe Id so Id is unecessary,
+  // but then ChatId would need a GSI for retrieving messages by ChatId 
+  // Check message length
 
-    //PUSHER
-    var Pusher = require('pusher');
+  //PUSHER
+  var Pusher = require('pusher');
 
 	var pusher = new Pusher({
 	  appId: process.env.PUSHER_APP_ID,
@@ -43,8 +43,8 @@ exports.createMessage = function(event, context, callback){
 
 	var params = {
 		Item : {
-		    "ChatId" : event.pathParameters['chat-id'],
-		    "Id" : createdTime.toString() + user_email,
+		  "ChatId" : event.pathParameters['chat-id'],
+		  "Id" : createdTime.toString() + user_email,
 			"UserEmail" : user_email,
 			"CreatedTime" : createdTime,
 			"Message" : message
@@ -56,7 +56,7 @@ exports.createMessage = function(event, context, callback){
 		    callback(err, null);
 		}else{
 			response.body = JSON.stringify({'success': true});
-            callback(null, response);
+      callback(null, response);
 		}
 	});
 }

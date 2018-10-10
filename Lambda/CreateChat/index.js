@@ -3,12 +3,18 @@
 var AWS = require('aws-sdk'),
 	uuid = require('uuid'),
 	documentClient = new AWS.DynamoDB.DocumentClient(); 
+	
+var response = {
+    statusCode: 200,
+    headers:{ 'Access-Control-Allow-Origin' : '*' }
+};
 
 exports.createChat = function(event, context, callback){
     let chat_id = uuid.v1();
     let chat_member_puts = [];
+    let payload = JSON.parse(event.body);
     console.log(event);
-    for (let user_email of event.members) {
+    for (let user_email of payload.members) {
         chat_member_puts.push({
             PutRequest: {
                 Item: {
@@ -25,6 +31,11 @@ exports.createChat = function(event, context, callback){
     };
 
 	documentClient.batchWrite(params, function(err, data){
-		callback(err, data);
+	    if(err){
+		    callback(err, null);
+		}else{
+			response.body = JSON.stringify({'ChatId': chat_id});
+            callback(null, response);
+		}
 	});
 }
